@@ -1,8 +1,12 @@
 from sanic import Sanic
 from sanic.response import json, html
+from sanic_cors import CORS, cross_origin
+from json import load
+
 import os
 
 app = Sanic(__name__)
+CORS(app)
 
 # servin dem assets
 app.static('/public', './public')
@@ -15,10 +19,11 @@ async def index(request):
     return html(index_page.read())
 
 
-@app.route('/api/search')
+@app.route('/api/search', methods=['GET'])
 async def get_all(request):
-    mock_inventory = open(os.getcwd() + '/test/mocks/inventory.json')
-    return json(mock_inventory)
+    with open(os.getcwd() + '/test/mocks/inventory.json') as json_data:
+        mock_inventory = load(json_data)
+        return json({ 'results': mock_inventory})
 
 
 app.run(host="0.0.0.0", port=5000, debug=True)
