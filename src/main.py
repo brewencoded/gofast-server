@@ -5,6 +5,7 @@ from json import load
 from pymongo import MongoClient
 from bson.json_util import dumps
 import os
+import re
 
 client = MongoClient(
     os.environ['DB_PORT_27017_TCP_ADDR'],
@@ -27,7 +28,28 @@ async def index(request):
 
 @app.route('/api/search', methods=['GET'])
 async def get_all(request):
-    cursor = db.inventory.find()
+    query = request.raw_args.get('query', None)
+    # TODO: figure out how to set up full-text search in dockerfile
+    # that is significantly more powerful and performant
+    # This would also fix the issue with not being abe to query
+    # aginst numeric field e.g. ID
+    cursor = None
+    if query is None or query == '':
+        cursor = db.inventory.find()
+    else:
+        regex = re.compile('.*' + re.escape(query) + '.*', re.IGNORECASE)
+        cursor = db.inventory.find({
+            '$or': [
+                {"Description": {'$regex' : regex}},
+                {"lastSold": {'$regex' : regex}},
+                {"ShelfLife": {'$regex' : regex}},
+                {"Department": {'$regex' : regex}},
+                {"Price": {'$regex' : regex}},
+                {"Unit": {'$regex' : regex}},
+                {"xFor": {'$regex' : regex}},
+                {"Cost": {'$regex' : regex}}
+            ]
+        })
     results = map(lambda item: item, cursor)
     return json({ 'results': dumps(results)})
 
