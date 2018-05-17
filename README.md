@@ -19,6 +19,7 @@
 ### Todo:
  - [ ] Use gunicorn to manage the server
  - [x] Dockerize allthethings
+ - [ ] Mount a volume so we don't have to continuously re-build
  - [ ] Nginx for reverse proxying and serving assets (It's faster)
  - [ ] ???
  - [ ] Profit
