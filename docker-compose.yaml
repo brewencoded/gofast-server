@@ -1,3 +1,6 @@
+db:
+  image: mongo
+
 web:
   build: .
   command: python -u main.py
@@ -5,5 +8,8 @@ web:
     - "5000:5000"
   links:
     - db
-db:
-  image: mongo
+
+seed:
+  build: mongoseed/.
+  links:
+    - db
