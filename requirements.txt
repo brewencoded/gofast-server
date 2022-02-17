@@ -18,7 +18,7 @@ pylint==1.9.1
 pymongo==3.6.1
 PyYAML==3.12
 requests==2.18.4
-sanic==0.7.0
+sanic==20.12.6
 Sanic-Cors==0.9.3
 Sanic-Plugins-Framework==0.5.2.dev20180201
 six==1.11.0
